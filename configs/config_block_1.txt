@@ -1,0 +1,9 @@
+ip access-list extended 102
+ remark permit FTP service from Acad to RS
+ permit tcp 192.167.2.0 0.0.0.127 192.167.2.224 0.0.0.31 eq 21
+ permit tcp 192.167.2.0 0.0.0.127 192.167.3.0 0.0.0.255 eq 21
+ remark deny FTP service from non-Acad to RS
+ deny tcp any 192.167.2.224 0.0.0.31 eq 21
+ deny tcp any 192.167.3.0 0.0.0.255 eq 21
+ remark permit all remaining IP traffic
+ permit ip any any

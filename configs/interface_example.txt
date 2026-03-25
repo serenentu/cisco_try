@@ -1,0 +1,7 @@
+interface g1/0
+ description RS S2.2 (matches Table 5: ACL 101 on RS S2.2 G1/0)
+ ip access-group 101 in
+
+interface g0/0
+ description RS core uplink
+ ip access-group 102 in
