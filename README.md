@@ -11,7 +11,7 @@ Because `.pkt` is a binary Packet Tracer file, complete it by applying the CLI c
 - `configs/config_block_1.txt` (Extended ACL 102)
 - `configs/interface_example.txt` (interface ACL attachment examples)
 
-Open `16th.pkt` in Cisco Packet Tracer, apply the commands on the RS routers, then verify:
+Open `16th.pkt` in Cisco Packet Tracer, apply the commands on the RS routers (Research Services side in the topology), then verify:
 
 - `show access-lists`
 - `show run | section access-list`
