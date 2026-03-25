@@ -7,17 +7,19 @@
 ! -------------------------------------------------------------------
 ! 1) Target addressing used in this build
 ! -------------------------------------------------------------------
-! Acad network:      192.167.2.0/25      gateway 192.167.2.1
+! Academic network: 192.167.2.0/25 gateway 192.167.2.1
 ! RS networks:       192.167.2.224/27, 192.167.3.0/24 (split into /27 blocks)
 ! RS backbone/core:  192.167.33.16/28
+! Backbone valid host range: 192.167.33.17-192.167.33.30
+! Used hosts on backbone: .22 (RS-Server), .25/.26 (RS uplinks), .28 (Academic), .29 (RS-CORE)
 ! ACL 101 applied IN on RS S2.2 g1/0
 ! ACL 102 applied IN on RS Core Router g0/0
 !
 ! ACL intent:
-! - RS -> Acad: FTP allowed
-! - RS -> non-Acad: FTP denied
-! - Acad -> RS: FTP allowed
-! - non-Acad -> RS: FTP denied
+! - RS -> Academic: FTP allowed
+! - RS -> non-Academic: FTP denied
+! - Academic -> RS: FTP allowed
+! - non-Academic -> RS: FTP denied
 ! - all other IP traffic: allowed
 
 ! -------------------------------------------------------------------
@@ -55,6 +57,7 @@ interface g0/1
 exit
 !
 ip route 0.0.0.0 0.0.0.0 192.167.33.29
+! default route via RS-CORE (next hop is directly reachable on 192.167.33.16/28)
 end
 write memory
 
@@ -89,6 +92,7 @@ interface g0/1
 exit
 !
 ip route 0.0.0.0 0.0.0.0 192.167.33.29
+! default route via RS-CORE (next hop is directly reachable on 192.167.33.16/28)
 end
 write memory
 
@@ -99,7 +103,7 @@ hostname RS-CORE
 no ip domain-lookup
 !
 interface g0/0
- description RS-CORE-BACKBONE-192.167.33.16/28
+ description RS-CORE-BACKBONE
  ip address 192.167.33.29 255.255.255.240
  no shutdown
 exit
@@ -144,7 +148,7 @@ write memory
 ! Apply on RS-S2-2
 conf t
 ip access-list extended 101
- remark permit FTP service from RS to Acad
+ remark permit FTP service from RS to Academic
  permit tcp 192.167.2.224 0.0.0.31 192.167.2.0 0.0.0.127 eq 21
  permit tcp 192.167.3.0 0.0.0.255 192.167.2.0 0.0.0.127 eq 21
  remark deny FTP service from RS to others
@@ -155,10 +159,10 @@ ip access-list extended 101
 exit
 !
 ip access-list extended 102
- remark permit FTP service from Acad to RS
+ remark permit FTP service from Academic to RS
  permit tcp 192.167.2.0 0.0.0.127 192.167.2.224 0.0.0.31 eq 21
  permit tcp 192.167.2.0 0.0.0.127 192.167.3.0 0.0.0.255 eq 21
- remark deny FTP service from non-Acad to RS
+ remark deny FTP service from non-Academic to RS
  deny tcp any 192.167.2.224 0.0.0.31 eq 21
  deny tcp any 192.167.3.0 0.0.0.255 eq 21
  remark permit all remaining IP traffic
@@ -183,9 +187,9 @@ write memory
 ! 4) Host/server setup and validation
 ! -------------------------------------------------------------------
 ! Use these minimum host settings for tests:
-! - Acad-PC:   192.167.2.10/25   GW 192.167.2.1
+! - Academic-PC: 192.167.2.10/25   GW 192.167.2.1
 ! - RS-PC:     192.167.3.98/27   GW 192.167.3.97
-! - RS-Server: 192.167.33.22/28  GW 192.167.33.29
+! - RS-Server: 192.167.33.22 (255.255.255.240) GW 192.167.33.29
 !
 ! Router checks:
 show ip interface brief
@@ -201,10 +205,10 @@ show ip interface g0/0
 ! ping 192.167.3.97
 ! ping 192.167.33.22
 ! (FTP tests)
-! - RS -> Acad FTP should PASS
-! - RS -> non-Acad FTP should FAIL
-! - Acad -> RS FTP should PASS
-! - non-Acad -> RS FTP should FAIL
+! - RS -> Academic FTP should PASS
+! - RS -> non-Academic FTP should FAIL
+! - Academic -> RS FTP should PASS
+! - non-Academic -> RS FTP should FAIL
 
 ! -------------------------------------------------------------------
 ! 5) Completion proof for lecturer/demo
