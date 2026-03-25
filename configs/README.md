@@ -1,4 +1,4 @@
-# Cisco commands to complete `16th.pkt`
+# Cisco commands to complete Packet Tracer files
 
 `16th.pkt` is a Packet Tracer binary file and cannot be directly edited with the CLI tools in this environment.
 
@@ -10,6 +10,7 @@ Use the files in this folder to complete device configuration in Packet Tracer m
 - `interface_example.txt` → Interface ACL attachment example
 - `rs_subnets.txt` → RS subnet allocation reference
 - `show_working_configs_and_addresses.txt` → verification/show commands for all working configs and addressing
+- `full_cisco_completion.txt` → custom concrete command flow for empty/base `cisco.pkt`
 
 ## How to apply in Packet Tracer
 
@@ -35,3 +36,14 @@ For a full demonstration of **all working configs and addresses**, run the comma
 ![Packet Tracer topology ping snippet](https://github.com/user-attachments/assets/45e5427b-7c9d-4417-911d-7315ee3342cb)
 
 These command blocks are aligned with `../Corrected_Tables_3_to_5_and_Cisco_Template.md`.
+
+## `cisco.pkt` custom completion (empty/base file)
+
+Use `full_cisco_completion.txt` as a guided build-out for your own version of the topology in `cisco.pkt`.
+
+It provides a practical sequence to:
+
+1. define addressing and baseline interface bring-up,
+2. configure routing,
+3. add ACL controls (using ACL 101 and 102 pattern),
+4. verify allowed and blocked traffic with show/ping checks.
