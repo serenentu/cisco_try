@@ -26,4 +26,8 @@ For a full demonstration of **all working configs and addresses**, run the comma
 
 - `show_working_configs_and_addresses.txt`
 
+## Example verification snippet (screenshot)
+
+![Packet Tracer verification snippet](https://github.com/user-attachments/assets/d01a4828-c3c4-46f8-abfc-dc1e42ecdb53)
+
 These command blocks are aligned with `../Corrected_Tables_3_to_5_and_Cisco_Template.md`.

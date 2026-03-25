@@ -23,6 +23,10 @@ To present **all working configs and addresses** for checking/demo, run the comm
 
 - `configs/show_working_configs_and_addresses.txt`
 
+Example output snippet screenshot:
+
+![Packet Tracer verification snippet](https://github.com/user-attachments/assets/d01a4828-c3c4-46f8-abfc-dc1e42ecdb53)
+
 Before ACL testing, also confirm:
 
 - Router interface IPs and inter-router links are correctly configured
