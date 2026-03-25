@@ -1,6 +1,9 @@
 # cisco_try
 
-This repository contains the Cisco Packet Tracer project file `16th.pkt`.
+This repository contains Cisco Packet Tracer project files:
+
+- `16th.pkt`
+- `cisco.pkt` (empty/base file for custom build-out)
 
 ## Complete `16th.pkt`
 
@@ -50,3 +53,12 @@ Before ACL testing, also confirm:
 - Routing protocol/routes are present (static routing or RIP as required)
 - Switch VLANs and port assignments (if VLANs are used)
 - Host IP configuration (IP/mask/gateway) matches the addressing plan
+
+## Complete `cisco.pkt` (custom version)
+
+Use this custom completion checklist/command template:
+
+- `configs/full_cisco_completion.txt` (my custom end-to-end completion flow for the empty `cisco.pkt`)
+- `configs/show_working_configs_and_addresses.txt` (demo/verification command pack)
+
+Open `cisco.pkt`, apply the checklist in `configs/full_cisco_completion.txt`, and verify end-to-end connectivity with successful allowed-path pings and failed blocked-path checks.
