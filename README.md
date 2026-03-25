@@ -16,3 +16,11 @@ Open `16th.pkt` in Cisco Packet Tracer, apply the commands on the RS routers (Re
 - `show access-lists`
 - `show run | section access-list`
 - `show ip interface <interface>`
+- `show ip route`
+
+Before ACL testing, also confirm:
+
+- Router interface IPs and inter-router links are correctly configured
+- Routing protocol/routes are present (static routing or RIP as required)
+- Switch VLANs and port assignments (if VLANs are used)
+- Host IP configuration (IP/mask/gateway) matches the addressing plan

@@ -8,6 +8,15 @@
 ! - non-Acad -> RS: FTP denied
 ! - All remaining IP traffic: permitted
 !
+! Baseline conformance checklist (before ACL testing)
+! Routers
+! - Confirm interface IP addressing and inter-router links are up/up
+! - Confirm routing is configured (static routes or RIP as required by topology)
+! Switches
+! - Confirm VLANs and switchport assignments (if VLAN segmentation is used)
+! Hosts
+! - Confirm end-host IP/mask/default-gateway settings match addressing plan
+!
 ! Address groups used
 ! - Acad summary: 192.167.2.0/25          (wildcard 0.0.0.127)
 ! - RS summaries:
@@ -65,8 +74,12 @@ write memory
 ! -------------------------------------------------------------------
 show access-lists
 show run | section access-list
+show ip route
+show ip protocols
+show ip interface brief
 show ip interface g1/0
 show ip interface g0/0
+show vlan brief
 
 ! -------------------------------------------------------------------
 ! 4) Functional test checklist (Packet Tracer simulation or real-time)
@@ -76,3 +89,10 @@ show ip interface g0/0
 ! [ ] From Acad host -> RS host/server FTP (tcp/21) succeeds
 ! [ ] From non-Acad host -> RS FTP (tcp/21) fails
 ! [ ] Non-FTP traffic (ICMP/HTTP/etc.) still routes normally
+!
+! Phase 4 demonstration checklist (what to show lecturer)
+! [ ] Ping between allowed networks succeeds
+! [ ] Ping where ACL blocks traffic fails (or filtered service test fails)
+! [ ] Routing table output shown on each router (show ip route)
+! [ ] ACL configuration and hit counters shown (show access-lists)
+! [ ] End-to-end cross-router connectivity demonstrated for allowed traffic
