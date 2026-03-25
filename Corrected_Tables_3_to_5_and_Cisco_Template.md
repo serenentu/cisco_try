@@ -5,7 +5,7 @@ Table 1 and Table 2 remain unchanged.
 
 ## Table 3. Server address assignments (corrected)
 
-Server subnet: **192.167.33.16/28** (mask **255.255.255.240**)
+Server subnet: **192.167.33.16/28** (mask **255.255.255.240**, usable hosts .17 to .30)
 
 | Server Name | Server IP Address | Subnet Mask | Attached Router Name | Router Interface |
 |---|---|---|---|---|
@@ -37,13 +37,13 @@ RS allocations used below are aligned to the provided RS plan:
 
 | Network Name | Router Name | Router Interface | Network # | Subnet Mask | Router IP Address | Access List Number |
 |---|---|---|---|---|---|---|
-| RS Network | RS S2.1 | G0/0 | 192.167.2.224 | 255.255.255.224 | 192.167.2.225 | 101 (OUT) |
-| RS Network | RS S2.1 | G1/0 | 192.167.3.0 | 255.255.255.224 | 192.167.3.1 | 101 (OUT) |
-| RS Network | RS S2.1 | G2/0 | 192.167.3.32 | 255.255.255.224 | 192.167.3.33 | 101 (OUT) |
-| RS Network | RS S2.2 | G0/0 | 192.167.3.64 | 255.255.255.224 | 192.167.3.65 | 102 (IN) |
-| RS Network | RS S2.2 | G1/0 | 192.167.3.96 | 255.255.255.224 | 192.167.3.97 | 102 (IN) |
-| RS Network | RS S2.2 | G2/0 | 192.167.3.128 | 255.255.255.224 | 192.167.3.129 | 102 (IN) |
-| RS Backbone | RS Core Router | G0/0 | 192.167.33.16 | 255.255.255.240 | 192.167.33.30 | 123 (IN) |
+| RS Network | RS S2.1 | G0/0 | 192.167.2.224 | 255.255.255.224 | 192.167.2.225 | 101 (IN) |
+| RS Network | RS S2.1 | G1/0 | 192.167.3.0 | 255.255.255.224 | 192.167.3.1 | 101 (IN) |
+| RS Network | RS S2.1 | G2/0 | 192.167.3.32 | 255.255.255.224 | 192.167.3.33 | 101 (IN) |
+| RS Network | RS S2.2 | G0/0 | 192.167.3.64 | 255.255.255.224 | 192.167.3.65 | 101 (IN) |
+| RS Network | RS S2.2 | G1/0 | 192.167.3.96 | 255.255.255.224 | 192.167.3.97 | 101 (IN) |
+| RS Network | RS S2.2 | G2/0 | 192.167.3.128 | 255.255.255.224 | 192.167.3.129 | 101 (IN) |
+| RS Backbone | RS Core Router | G0/0 | 192.167.33.16 | 255.255.255.240 | 192.167.33.29 | 102 (IN) |
 
 ---
 
@@ -91,7 +91,7 @@ ip access-list extended 102
 
 ```cisco
 interface g1/0
- description RS S2.2 segment
+ description RS S2.2 (matches Table 5: ACL 101 on RS S2.2 G1/0)
  ip access-group 101 in
 
 interface g0/0
