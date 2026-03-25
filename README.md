@@ -29,13 +29,20 @@ Minimum verification in Packet Tracer:
 - Ping across networks from one end device to another
 - Confirm `0% loss` on allowed end-to-end paths
 
+Primary checks to mark topology as completed:
+
+- Ping between allowed networks succeeds
+- Ping is blocked where ACL policy applies
+- Routing tables are present and correct (`show ip route`)
+- Cross-router connectivity is demonstrated end-to-end
+
 To present **all working configs and addresses** for checking/demo, run the command pack in:
 
 - `configs/show_working_configs_and_addresses.txt`
 
 Example output snippet screenshot:
 
-![Packet Tracer topology ping snippet](https://github.com/user-attachments/assets/cf5e7b59-fa6d-40ea-a5c2-9274f6059685)
+![Packet Tracer topology ping snippet](https://github.com/user-attachments/assets/45e5427b-7c9d-4417-911d-7315ee3342cb)
 
 Before ACL testing, also confirm:
 

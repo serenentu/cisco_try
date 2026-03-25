@@ -1,9 +1,9 @@
 ! Show/verification command pack for 16th.pkt
 ! Use this after applying full_16th_completion.txt so you can demonstrate:
-! 1) ACL policy is active
-! 2) Routing is working
-! 3) Interface IP addressing is correct
-! 4) Device running configurations are present
+! 1) Ping between allowed networks succeeds
+! 2) Ping is blocked where ACL policy applies
+! 3) Routing tables are correct and visible
+! 4) Cross-router connectivity is working end-to-end
 
 ! -------------------------------------------------------------------
 ! On EACH ROUTER (repeat per router in topology)
@@ -36,13 +36,16 @@ show cdp neighbors detail
 ipconfig /all
 arp -a
 ping <default_gateway_ip>
+! Allowed-path ping test (should succeed)
 ping <required_remote_ip>
+! ACL-blocked ping test (should fail where policy applies)
+ping <acl_blocked_remote_ip>
 
 ! -------------------------------------------------------------------
-! What to present as "all working configs and addresses"
+! What to present as topology completion proof
 ! -------------------------------------------------------------------
 ! - Router/Switch: show running-config
 ! - Router addressing: show ip interface brief
-! - Routing status: show ip route
+! - Routing status/tables: show ip route
 ! - ACL status + hit counters: show access-lists
 ! - Host addressing: ipconfig /all

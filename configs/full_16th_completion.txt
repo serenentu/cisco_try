@@ -93,7 +93,7 @@ show vlan brief
 !
 ! Phase 4 demonstration checklist (what to show lecturer)
 ! [ ] Ping between required networks/devices succeeds
-! [ ] Ping where ACL blocks traffic fails (or filtered service test fails)
+! [ ] Ping where ACL blocks traffic fails
 ! [ ] Routing table output shown on each router (show ip route)
 ! [ ] ACL configuration and hit counters shown (show access-lists)
 ! [ ] End-to-end cross-router connectivity demonstrated for allowed traffic
