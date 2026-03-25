@@ -9,6 +9,7 @@ Use the files in this folder to complete device configuration in Packet Tracer m
 - `config_block_1.txt` → Extended ACL 102
 - `interface_example.txt` → Interface ACL attachment example
 - `rs_subnets.txt` → RS subnet allocation reference
+- `show_working_configs_and_addresses.txt` → verification/show commands for all working configs and addressing
 
 ## How to apply in Packet Tracer
 
@@ -20,5 +21,9 @@ Use the files in this folder to complete device configuration in Packet Tracer m
    - `show access-lists`
    - `show run | section access-list`
    - `show ip interface <interface>`
+
+For a full demonstration of **all working configs and addresses**, run the command bundle in:
+
+- `show_working_configs_and_addresses.txt`
 
 These command blocks are aligned with `../Corrected_Tables_3_to_5_and_Cisco_Template.md`.
