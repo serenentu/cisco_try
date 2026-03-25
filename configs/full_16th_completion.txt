@@ -1,0 +1,78 @@
+! Full completion script/checklist for 16th.pkt
+! Goal: enforce FTP policy between RS and Acad while permitting all other IP traffic.
+!
+! Policy summary
+! - RS -> Acad: FTP permitted
+! - RS -> non-Acad: FTP denied
+! - Acad -> RS: FTP permitted
+! - non-Acad -> RS: FTP denied
+! - All remaining IP traffic: permitted
+!
+! Address groups used
+! - Acad summary: 192.167.2.0/25          (wildcard 0.0.0.127)
+! - RS summaries:
+!   - 192.167.2.224/27                    (wildcard 0.0.0.31)
+!   - 192.167.3.0/24                      (wildcard 0.0.0.255)
+!
+! -------------------------------------------------------------------
+! 1) Configure ACL 101 on RS edge/distribution router(s)
+!    Apply inbound on RS-facing user LAN interfaces (example: g1/0 on RS S2.2)
+! -------------------------------------------------------------------
+conf t
+ip access-list extended 101
+ remark permit FTP service from RS to Acad
+ permit tcp 192.167.2.224 0.0.0.31 192.167.2.0 0.0.0.127 eq 21
+ permit tcp 192.167.3.0 0.0.0.255 192.167.2.0 0.0.0.127 eq 21
+ remark deny FTP service from RS to others
+ deny tcp 192.167.2.224 0.0.0.31 any eq 21
+ deny tcp 192.167.3.0 0.0.0.255 any eq 21
+ remark permit all remaining IP traffic
+ permit ip any any
+exit
+!
+interface g1/0
+ description RS S2.2 (ACL 101 inbound example)
+ ip access-group 101 in
+exit
+end
+write memory
+
+! -------------------------------------------------------------------
+! 2) Configure ACL 102 on RS core/uplink router
+!    Apply inbound on RS core side interface toward shared/server/core segment (example: g0/0)
+! -------------------------------------------------------------------
+conf t
+ip access-list extended 102
+ remark permit FTP service from Acad to RS
+ permit tcp 192.167.2.0 0.0.0.127 192.167.2.224 0.0.0.31 eq 21
+ permit tcp 192.167.2.0 0.0.0.127 192.167.3.0 0.0.0.255 eq 21
+ remark deny FTP service from non-Acad to RS
+ deny tcp any 192.167.2.224 0.0.0.31 eq 21
+ deny tcp any 192.167.3.0 0.0.0.255 eq 21
+ remark permit all remaining IP traffic
+ permit ip any any
+exit
+!
+interface g0/0
+ description RS core uplink (ACL 102 inbound example)
+ ip access-group 102 in
+exit
+end
+write memory
+
+! -------------------------------------------------------------------
+! 3) Required verification commands (run after applying)
+! -------------------------------------------------------------------
+show access-lists
+show run | section access-list
+show ip interface g1/0
+show ip interface g0/0
+
+! -------------------------------------------------------------------
+! 4) Functional test checklist (Packet Tracer simulation or real-time)
+! -------------------------------------------------------------------
+! [ ] From RS host -> Acad server FTP (tcp/21) succeeds
+! [ ] From RS host -> non-Acad destination FTP (tcp/21) fails
+! [ ] From Acad host -> RS host/server FTP (tcp/21) succeeds
+! [ ] From non-Acad host -> RS FTP (tcp/21) fails
+! [ ] Non-FTP traffic (ICMP/HTTP/etc.) still routes normally
