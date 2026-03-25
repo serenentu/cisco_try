@@ -4,6 +4,7 @@
 
 Use the files in this folder to complete device configuration in Packet Tracer manually:
 
+- `full_16th_completion.txt` → Full end-to-end completion checklist/commands for `16th.pkt`
 - `config_block_0.txt` → Extended ACL 101
 - `config_block_1.txt` → Extended ACL 102
 - `interface_example.txt` → Interface ACL attachment example
