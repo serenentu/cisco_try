@@ -56,9 +56,9 @@ Before ACL testing, also confirm:
 
 ## Complete `cisco.pkt` (custom version)
 
-Use this custom completion checklist/command template:
+Use this custom concrete completion command flow:
 
-- `configs/full_cisco_completion.txt` (my custom end-to-end completion flow for the empty `cisco.pkt`)
+- `configs/full_cisco_completion.txt` (my built end-to-end command sequence for the empty `cisco.pkt`)
 - `configs/show_working_configs_and_addresses.txt` (demo/verification command pack)
 
 Open `cisco.pkt`, apply the checklist in `configs/full_cisco_completion.txt`, and verify end-to-end connectivity with successful allowed-path pings and failed blocked-path checks.

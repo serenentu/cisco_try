@@ -1,18 +1,19 @@
-! Custom completion checklist/template for empty cisco.pkt
-! Goal: build your own working Packet Tracer topology from the empty/base file.
+! Custom concrete build for empty cisco.pkt
+! Goal: build a working Packet Tracer topology from the empty/base file.
 !
-! Use this as a structured sequence in Packet Tracer CLI.
-! Replace placeholders in <> with your own values from your addressing plan.
+! This version is ready to paste as-is (interface IDs may need adjustment
+! if your device model names ports differently).
 
 ! -------------------------------------------------------------------
-! 1) Planning checklist (before CLI)
+! 1) Target addressing used in this build
 ! -------------------------------------------------------------------
-! [ ] Define subnets/VLANs for each department/site
-! [ ] Assign router interface IPs and host default gateways
-! [ ] Decide routing method (static routes or RIP/OSPF/EIGRP as required)
-! [ ] Identify where ACLs should be attached (closest practical interface)
+! Acad network:      192.167.2.0/25      gateway 192.167.2.1
+! RS networks:       192.167.2.224/27, 192.167.3.0/24 (split into /27 blocks)
+! RS backbone/core:  192.167.33.16/28
+! ACL 101 applied IN on RS S2.2 g1/0
+! ACL 102 applied IN on RS Core Router g0/0
 !
-! Example RS/Acad ACL intent (same as 16th flow):
+! ACL intent:
 ! - RS -> Acad: FTP allowed
 ! - RS -> non-Acad: FTP denied
 ! - Acad -> RS: FTP allowed
@@ -20,112 +21,193 @@
 ! - all other IP traffic: allowed
 
 ! -------------------------------------------------------------------
-! 2) Baseline router setup (repeat per router)
+! 2) Router baseline + addressing
 ! -------------------------------------------------------------------
+
+! RS S2.1
 enable
 conf t
-hostname <ROUTER_NAME>
+hostname RS-S2-1
 no ip domain-lookup
 !
-interface <LAN_INTERFACE_1>
- description <LAN_DESCRIPTION_1>
- ip address <LAN_IP_1> <LAN_MASK_1>
+interface g0/0
+ description RS-LAN-192.167.2.224/27
+ ip address 192.167.2.225 255.255.255.224
  no shutdown
 exit
 !
-interface <LAN_INTERFACE_2>
- description <LAN_DESCRIPTION_2>
- ip address <LAN_IP_2> <LAN_MASK_2>
+interface g1/0
+ description RS-LAN-192.167.3.0/27
+ ip address 192.167.3.1 255.255.255.224
  no shutdown
 exit
 !
-interface <UPLINK_INTERFACE>
- description <UPLINK_DESCRIPTION>
- ip address <UPLINK_IP> <UPLINK_MASK>
+interface g2/0
+ description RS-LAN-192.167.3.32/27
+ ip address 192.167.3.33 255.255.255.224
  no shutdown
 exit
+!
+interface g0/1
+ description UPLINK-TO-RS-CORE
+ ip address 192.167.33.25 255.255.255.240
+ no shutdown
+exit
+!
+ip route 0.0.0.0 0.0.0.0 192.167.33.29
+end
+write memory
+
+! RS S2.2
+enable
+conf t
+hostname RS-S2-2
+no ip domain-lookup
+!
+interface g0/0
+ description RS-LAN-192.167.3.64/27
+ ip address 192.167.3.65 255.255.255.224
+ no shutdown
+exit
+!
+interface g1/0
+ description RS-LAN-192.167.3.96/27
+ ip address 192.167.3.97 255.255.255.224
+ no shutdown
+exit
+!
+interface g2/0
+ description RS-LAN-192.167.3.128/27
+ ip address 192.167.3.129 255.255.255.224
+ no shutdown
+exit
+!
+interface g0/1
+ description UPLINK-TO-RS-CORE
+ ip address 192.167.33.26 255.255.255.240
+ no shutdown
+exit
+!
+ip route 0.0.0.0 0.0.0.0 192.167.33.29
+end
+write memory
+
+! RS Core Router
+enable
+conf t
+hostname RS-CORE
+no ip domain-lookup
+!
+interface g0/0
+ description RS-CORE-BACKBONE-192.167.33.16/28
+ ip address 192.167.33.29 255.255.255.240
+ no shutdown
+exit
+!
+ip route 192.167.2.224 255.255.255.224 192.167.33.25
+ip route 192.167.3.0 255.255.255.224 192.167.33.25
+ip route 192.167.3.32 255.255.255.224 192.167.33.25
+ip route 192.167.3.64 255.255.255.224 192.167.33.26
+ip route 192.167.3.96 255.255.255.224 192.167.33.26
+ip route 192.167.3.128 255.255.255.224 192.167.33.26
+ip route 192.167.2.0 255.255.255.128 192.167.33.28
+end
+write memory
+
+! Academic Router
+enable
+conf t
+hostname ACADEMIC
+no ip domain-lookup
+!
+interface g0/0
+ description ACAD-LAN-192.167.2.0/25
+ ip address 192.167.2.1 255.255.255.128
+ no shutdown
+exit
+!
+interface g0/1
+ description ACAD-UPLINK-TO-RS-CORE
+ ip address 192.167.33.28 255.255.255.240
+ no shutdown
+exit
+!
+ip route 192.167.2.224 255.255.255.224 192.167.33.29
+ip route 192.167.3.0 255.255.255.0 192.167.33.29
 end
 write memory
 
 ! -------------------------------------------------------------------
-! 3) Routing setup (choose one model for your topology)
+! 3) ACL policy and attachment
 ! -------------------------------------------------------------------
-! Option A: Static routing (repeat as needed)
-conf t
-ip route <DEST_NETWORK> <DEST_MASK> <NEXT_HOP_OR_EXIT_INT>
-ip route <DEST_NETWORK_2> <DEST_MASK_2> <NEXT_HOP_OR_EXIT_INT_2>
-end
-write memory
-!
-! Option B: RIP v2
-conf t
-router rip
- version 2
- no auto-summary
- network <MAJOR_NETWORK_A>
- network <MAJOR_NETWORK_B>
-end
-write memory
 
-! -------------------------------------------------------------------
-! 4) ACL policy template (optional/adaptable)
-! -------------------------------------------------------------------
+! Apply on RS-S2-2
 conf t
 ip access-list extended 101
  remark permit FTP service from RS to Acad
- permit tcp <RS_SUMMARY_1> <RS_WILDCARD_1> <ACAD_SUMMARY> <ACAD_WILDCARD> eq 21
- permit tcp <RS_SUMMARY_2> <RS_WILDCARD_2> <ACAD_SUMMARY> <ACAD_WILDCARD> eq 21
+ permit tcp 192.167.2.224 0.0.0.31 192.167.2.0 0.0.0.127 eq 21
+ permit tcp 192.167.3.0 0.0.0.255 192.167.2.0 0.0.0.127 eq 21
  remark deny FTP service from RS to others
- deny tcp <RS_SUMMARY_1> <RS_WILDCARD_1> any eq 21
- deny tcp <RS_SUMMARY_2> <RS_WILDCARD_2> any eq 21
+ deny tcp 192.167.2.224 0.0.0.31 any eq 21
+ deny tcp 192.167.3.0 0.0.0.255 any eq 21
  remark permit all remaining IP traffic
  permit ip any any
 exit
 !
 ip access-list extended 102
  remark permit FTP service from Acad to RS
- permit tcp <ACAD_SUMMARY> <ACAD_WILDCARD> <RS_SUMMARY_1> <RS_WILDCARD_1> eq 21
- permit tcp <ACAD_SUMMARY> <ACAD_WILDCARD> <RS_SUMMARY_2> <RS_WILDCARD_2> eq 21
+ permit tcp 192.167.2.0 0.0.0.127 192.167.2.224 0.0.0.31 eq 21
+ permit tcp 192.167.2.0 0.0.0.127 192.167.3.0 0.0.0.255 eq 21
  remark deny FTP service from non-Acad to RS
- deny tcp any <RS_SUMMARY_1> <RS_WILDCARD_1> eq 21
- deny tcp any <RS_SUMMARY_2> <RS_WILDCARD_2> eq 21
+ deny tcp any 192.167.2.224 0.0.0.31 eq 21
+ deny tcp any 192.167.3.0 0.0.0.255 eq 21
  remark permit all remaining IP traffic
  permit ip any any
 exit
 !
-interface <ACL101_INTERFACE>
+interface g1/0
  ip access-group 101 in
 exit
-interface <ACL102_INTERFACE>
+end
+write memory
+
+! Apply ACL 102 on RS-CORE
+conf t
+interface g0/0
  ip access-group 102 in
 exit
 end
 write memory
 
 ! -------------------------------------------------------------------
-! 5) Host/server setup and validation
+! 4) Host/server setup and validation
 ! -------------------------------------------------------------------
-! [ ] Set each PC/server IP, subnet mask, and default gateway
-! [ ] Validate local gateway reachability (ping gateway)
-! [ ] Validate cross-router connectivity (ping remote subnet hosts)
-! [ ] Validate ACL effects (allowed FTP passes, blocked FTP fails)
+! Use these minimum host settings for tests:
+! - Acad-PC:   192.167.2.10/25   GW 192.167.2.1
+! - RS-PC:     192.167.3.98/27   GW 192.167.3.97
+! - RS-Server: 192.167.33.22/28  GW 192.167.33.29
 !
 ! Router checks:
 show ip interface brief
 show ip route
 show access-lists
 show run | section access-list
-show ip interface <ACL101_INTERFACE>
-show ip interface <ACL102_INTERFACE>
+show ip interface g1/0
+show ip interface g0/0
 !
 ! End-host checks:
 ! ipconfig /all
-! ping <default_gateway_ip>
-! ping <required_remote_ip>
-! ping <acl_blocked_remote_ip>
+! ping 192.167.2.1
+! ping 192.167.3.97
+! ping 192.167.33.22
+! (FTP tests)
+! - RS -> Acad FTP should PASS
+! - RS -> non-Acad FTP should FAIL
+! - Acad -> RS FTP should PASS
+! - non-Acad -> RS FTP should FAIL
 
 ! -------------------------------------------------------------------
-! 6) Completion proof for lecturer/demo
+! 5) Completion proof for lecturer/demo
 ! -------------------------------------------------------------------
 ! [ ] Allowed traffic success is shown (0% ping loss / successful service access)
 ! [ ] Blocked traffic failure is shown where ACL policy applies

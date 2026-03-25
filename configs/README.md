@@ -10,7 +10,7 @@ Use the files in this folder to complete device configuration in Packet Tracer m
 - `interface_example.txt` → Interface ACL attachment example
 - `rs_subnets.txt` → RS subnet allocation reference
 - `show_working_configs_and_addresses.txt` → verification/show commands for all working configs and addressing
-- `full_cisco_completion.txt` → custom completion template for empty/base `cisco.pkt`
+- `full_cisco_completion.txt` → custom concrete command flow for empty/base `cisco.pkt`
 
 ## How to apply in Packet Tracer
 
