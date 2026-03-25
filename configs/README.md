@@ -18,6 +18,7 @@ Use the files in this folder to complete device configuration in Packet Tracer m
 3. Paste commands from `config_block_0.txt` and `config_block_1.txt`.
 4. Apply interface bindings from `interface_example.txt` on the correct interfaces.
 5. Verify with:
+   - End-to-end `ping` from one device/network to another (required)
    - `show access-lists`
    - `show run | section access-list`
    - `show ip interface <interface>`
@@ -28,6 +29,6 @@ For a full demonstration of **all working configs and addresses**, run the comma
 
 ## Example verification snippet (screenshot)
 
-![Packet Tracer verification snippet](https://github.com/user-attachments/assets/d01a4828-c3c4-46f8-abfc-dc1e42ecdb53)
+![Packet Tracer topology ping snippet](https://github.com/user-attachments/assets/cf5e7b59-fa6d-40ea-a5c2-9274f6059685)
 
 These command blocks are aligned with `../Corrected_Tables_3_to_5_and_Cisco_Template.md`.

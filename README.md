@@ -19,13 +19,23 @@ Open `16th.pkt` in Cisco Packet Tracer, apply the commands on the RS routers (Re
 - `show ip interface <interface>`
 - `show ip route`
 
+## Topology completion goal (ping-based)
+
+For this project, treat completion as: **topology is connected and devices can ping each other across required paths**.
+
+Minimum verification in Packet Tracer:
+
+- Confirm interfaces are up (`show ip interface brief` on routers)
+- Ping across networks from one end device to another
+- Confirm `0% loss` on allowed end-to-end paths
+
 To present **all working configs and addresses** for checking/demo, run the command pack in:
 
 - `configs/show_working_configs_and_addresses.txt`
 
 Example output snippet screenshot:
 
-![Packet Tracer verification snippet](https://github.com/user-attachments/assets/d01a4828-c3c4-46f8-abfc-dc1e42ecdb53)
+![Packet Tracer topology ping snippet](https://github.com/user-attachments/assets/cf5e7b59-fa6d-40ea-a5c2-9274f6059685)
 
 Before ACL testing, also confirm:
 
